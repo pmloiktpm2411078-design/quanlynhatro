@@ -1,0 +1,259 @@
+.room-status-control {
+  position: relative;
+  display: inline-flex;
+}
+
+.room-status-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  min-width: 150px;
+  padding: 9px 28px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.room-status-select:hover,
+.room-status-select:focus-visible,
+.room-status-select.is-open {
+  border-color: rgba(148, 163, 184, 0.48);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.08);
+}
+
+.room-status-select:active {
+  transform: scale(0.98);
+}
+
+.room-status-select:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.room-status-chevron {
+  position: absolute;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.68;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.18s ease;
+}
+
+.room-status-select.is-open .room-status-chevron {
+  transform: translateY(2px) rotate(225deg);
+}
+
+.room-status-available {
+  color: #34d399;
+  background-color: rgba(16, 185, 129, 0.16);
+}
+
+.room-status-occupied {
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.16);
+}
+
+.room-status-hold {
+  color: #fbbf24;
+  background-color: rgba(245, 158, 11, 0.16);
+}
+
+.room-status-maintenance {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.16);
+}
+
+.room-status-processing {
+  color: #fb923c;
+  background-color: rgba(249, 115, 22, 0.16);
+}
+
+.room-status-menu {
+  position: fixed;
+  z-index: 3000;
+  display: grid;
+  gap: 4px;
+  padding: 7px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.98);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48), 0 3px 10px rgba(0, 0, 0, 0.25);
+  animation: room-status-menu-in 0.14s ease-out;
+  backdrop-filter: blur(12px);
+}
+
+@keyframes room-status-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.room-status-option {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #dbe4f0;
+  font: inherit;
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.room-status-option:hover,
+.room-status-option:focus-visible {
+  border-color: rgba(148, 163, 184, 0.18);
+  background: rgba(51, 65, 85, 0.62);
+  outline: none;
+}
+
+.room-status-option:active {
+  transform: scale(0.99);
+}
+
+.room-status-option.is-selected {
+  background: rgba(51, 65, 85, 0.54);
+  color: #f8fafc;
+}
+
+.room-status-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.12);
+}
+
+.room-status-option-available .room-status-dot { background: #34d399; box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.14); }
+.room-status-option-occupied .room-status-dot { background: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14); }
+.room-status-option-hold .room-status-dot { background: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.14); }
+.room-status-option-maintenance .room-status-dot { background: #f87171; box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14); }
+.room-status-option-processing .room-status-dot { background: #fb923c; box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.14); }
+
+.room-status-check {
+  margin-left: auto;
+  color: #a5b4fc;
+  font-weight: 800;
+}
+
+.room-row-actions {
+  min-width: 110px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.room-row-actions button + button {
+  margin-left: 8px;
+}
+
+.room-row-actions .btn-action-edit,
+.room-row-actions .btn-action-delete {
+  display: inline-grid;
+  width: 38px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.room-row-actions .btn-action-edit {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.13);
+  border-color: rgba(96, 165, 250, 0.16);
+}
+
+.room-row-actions .btn-action-delete {
+  color: #fda4af;
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(251, 113, 133, 0.16);
+}
+
+.room-row-actions .btn-action-edit:hover {
+  color: #eff6ff;
+  background: #2563eb;
+  border-color: #3b82f6;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.room-row-actions .btn-action-delete:hover:not(:disabled) {
+  color: #fff1f2;
+  background: #be123c;
+  border-color: #f43f5e;
+  box-shadow: 0 5px 14px rgba(244, 63, 94, 0.2);
+  transform: translateY(-1px);
+}
+
+.room-row-actions .btn-action-edit:active,
+.room-row-actions .btn-action-delete:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+}
+
+.room-row-actions .btn-action-edit:focus-visible,
+.room-row-actions .btn-action-delete:focus-visible {
+  outline: 3px solid rgba(147, 197, 253, 0.38);
+  outline-offset: 2px;
+}
+
+.room-row-actions .btn-action-delete:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.room-row-actions svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.room-action-loading {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.room-action-error {
+  margin: 14px 16px;
+  padding: 11px 14px;
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.custom-modal .btn-confirm:disabled,
+.custom-modal .btn-cancel:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.delete-room-error {
+  margin: -10px 0 16px !important;
+  color: #fecaca !important;
+  font-size: 0.85rem !important;
+}

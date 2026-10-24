@@ -1,0 +1,44 @@
+# Thư mục thư viện Node.js
+node_modules/
+frontend/node_modules/
+
+# Các file môi trường có thể chứa mật khẩu
+.env
+.env.*
+!.env.example
+
+# File log
+npm-debug.log*
+yarn-debug.log*
+*.log
+
+# File hệ điều hành
+.DS_Store
+Thumbs.db
+
+# File cấu hình riêng của VS Code
+.vscode/
+
+# File sao lưu
+*.bak
+*.backup
+
+# File cơ sở dữ liệu xuất ra
+*.sql
+# File chứa mật khẩu và thông tin bí mật
+.env
+.env.*
+!.env.example
+# File chứa thông tin bí mật
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+
+# Thư mục thư viện
+node_modules/
+**/node_modules/
+# Keep versioned database migrations
+!migrations/
+!migrations/*.sql

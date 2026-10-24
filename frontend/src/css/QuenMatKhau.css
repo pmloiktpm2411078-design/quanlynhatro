@@ -1,0 +1,16 @@
+.forgot-password-main { justify-content: center; }
+.forgot-password-box { flex-basis: 460px; max-width: 460px; padding: 34px; }
+.forgot-password-box .login-subtitle { margin-bottom: 18px; }
+.forgot-password-notice { margin: 0 0 20px; padding: 12px 14px; border: 1px solid rgb(245 158 11 / 35%); border-radius: 9px; background: rgb(120 53 15 / 24%); color: #fde68a; font-size: 13px; line-height: 1.55; }
+.forgot-password-message { padding: 10px 12px; border-radius: 8px; background: rgb(30 41 59 / 90%); line-height: 1.5; }
+.forgot-password-message.error { border: 1px solid rgb(248 113 113 / 35%); color: #fca5a5; }
+.forgot-password-message.info { border: 1px solid rgb(56 189 248 / 30%); color: #bae6fd; }
+.forgot-password-message.success { border: 1px solid rgb(52 211 153 / 30%); color: #6ee7b7; }
+.forgot-password-back { margin: 22px 0 0; text-align: center; }
+.forgot-password-back a, .forgot-login-button { color: #7dd3fc; text-decoration: none; font-size: 14px; }
+.forgot-password-back a:hover, .forgot-login-button:hover { color: #bae6fd; text-decoration: underline; }
+.forgot-login-button { display: block; margin-top: 18px; text-align: center; }
+.forgot-password-box .login-submit-btn:disabled { opacity: .65; cursor: wait; }
+.forgot-change-email { display: block; margin: 15px auto 0; border: 0; background: transparent; color: #7dd3fc; cursor: pointer; font-size: 13px; }
+.forgot-change-email:hover { color: #bae6fd; text-decoration: underline; }
+@media (max-width: 768px) { .forgot-password-main { padding: 70px 20px 28px; } .forgot-password-box { flex-basis: auto; max-width: 460px; padding: 26px 22px; } }

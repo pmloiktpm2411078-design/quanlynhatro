@@ -1,0 +1,316 @@
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Nền tổng quát */
+.login-page-wrapper {
+  background-image: url('../assets/nenDangNhap.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* Lớp phủ mờ tổng thể */
+.login-page-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 30, 70, 0.65);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Nút Trang chủ */
+.login-home-btn {
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #1e3a8a;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+}
+
+.login-home-btn:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Bố cục hai cột */
+.login-main-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 80px 48px 40px;
+  box-sizing: border-box;
+}
+
+/* Cột trái */
+.login-left-content {
+  flex: 1 1 0;
+  min-width: 0;
+  color: white;
+}
+
+.login-left-content h2 {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.login-left-content h2 span {
+  display: inline-block;
+  color: #7dd3fc;
+}
+
+.login-left-content p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #f1f5f9;
+  max-width: 600px;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+/* Cột phải - Form đăng nhập */
+.login-right-box {
+  flex: 0 1 420px;
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.login-right-box h3 {
+  margin: 0 0 5px;
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.login-subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
+
+/* Nhóm nhập liệu */
+.login-input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-input-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  text-align: left;
+}
+
+.login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  z-index: 1;
+}
+
+.login-input-wrapper input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 42px 12px 42px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-input-wrapper input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+/* TẮT HOÀN TOÀN ICON CON MẮT MẶC ĐỊNH CỦA TRÌNH DUYỆT */
+.login-input-wrapper input::-ms-reveal,
+.login-input-wrapper input::-ms-clear {
+  display: none !important;
+}
+
+.login-input-wrapper input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.login-eye-btn {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.login-eye-btn:hover {
+  color: white;
+}
+
+/* Quên mật khẩu */
+.login-forgot-row {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.login-forgot-row a {
+  font-size: 12px;
+  color: #7dd3fc;
+  text-decoration: none;
+}
+
+.login-forgot-row a:hover {
+  text-decoration: underline;
+}
+
+/* Nút đăng nhập */
+.login-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Thông báo */
+.login-message {
+  padding: 10px;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  text-align: center;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* Màn hình nhỏ */
+@media (max-width: 900px) {
+  .login-main-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+    padding: 90px 24px 32px;
+  }
+
+  .login-left-content {
+    width: 100%;
+  }
+
+  .login-left-content h2 {
+    font-size: clamp(28px, 5vw, 40px);
+  }
+
+  .login-left-content p {
+    font-size: 16px;
+  }
+
+  .login-right-box {
+    flex: 0 1 auto;
+    width: 100%;
+    max-width: 420px;
+    padding: 32px 24px;
+  }
+}
+
+/* Điện thoại */
+@media (max-width: 480px) {
+  .login-home-btn {
+    top: 16px;
+    left: 16px;
+  }
+
+  .login-main-container {
+    padding: 80px 16px 24px;
+    gap: 24px;
+  }
+
+  .login-left-content h2 {
+    font-size: 28px;
+  }
+
+  .login-left-content p {
+    font-size: 15px;
+  }
+
+  .login-right-box {
+    padding: 28px 20px;
+  }
+}

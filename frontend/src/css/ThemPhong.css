@@ -1,0 +1,343 @@
+/* Form thêm phòng, đồng bộ với giao diện quản lý nền tối. */
+.add-room-main {
+  min-width: 0;
+  text-align: left;
+}
+
+.add-room-header {
+  gap: 20px;
+}
+
+.add-room-header h1 {
+  color: #f8fafc;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin: 0 0 6px;
+  text-transform: none;
+}
+
+.add-room-header p {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.add-room-card {
+  width: min(100%, 860px);
+  margin: 28px auto 0;
+  padding: 24px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+}
+
+.add-room-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #263244;
+}
+
+.add-room-eyebrow {
+  color: #f59e0b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.add-room-card-heading h2 {
+  color: #f8fafc;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  margin: 5px 0;
+}
+
+.add-room-card-heading p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.add-room-back-button,
+.add-room-cancel-button,
+.add-room-submit-button,
+.add-room-create-type-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.add-room-back-button {
+  flex: 0 0 auto;
+  color: #cbd5e1;
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+.add-room-back-button:hover,
+.add-room-cancel-button:hover {
+  background: #263449;
+  border-color: #475569;
+}
+
+.add-room-notice,
+.add-room-error,
+.add-room-success {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.add-room-notice--loading {
+  color: #cbd5e1;
+  background: #172338;
+  border-color: #263c59;
+}
+
+.add-room-notice--warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
+.add-room-notice-copy strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #fbbf24;
+}
+
+.add-room-notice-copy p {
+  color: #d6c69b;
+  line-height: 1.5;
+}
+
+.add-room-create-type-button,
+.add-room-submit-button {
+  color: #fff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.add-room-create-type-button {
+  flex: 0 0 auto;
+}
+
+.add-room-create-type-button:hover,
+.add-room-submit-button:not(:disabled):hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.add-room-error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.add-room-success {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.28);
+}
+
+.add-room-form {
+  margin: 0;
+}
+
+.add-room-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 22px;
+}
+
+.add-room-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.add-room-field > span {
+  margin-bottom: 8px;
+}
+
+.add-room-field b,
+.add-room-form-actions p b {
+  color: #f87171;
+}
+
+.add-room-field small {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.add-room-field input,
+.add-room-field select,
+.add-room-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 13px;
+  color: #f8fafc;
+  background: #0b1220;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  outline: none;
+  font: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.add-room-field textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.add-room-field input::placeholder,
+.add-room-field textarea::placeholder {
+  color: #64748b;
+  font-weight: 400;
+}
+
+.add-room-field input:focus,
+.add-room-field select:focus,
+.add-room-field textarea:focus {
+  background: #0d1728;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.add-room-field select:disabled {
+  color: #64748b;
+  cursor: not-allowed;
+  background: #111827;
+}
+
+.add-room-field--wide {
+  grid-column: 1 / -1;
+}
+
+.add-room-inline-link {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 0;
+  color: #60a5fa;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.add-room-inline-link:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.add-room-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+  margin-top: 24px;
+  border-top: 1px solid #263244;
+}
+
+.add-room-form-actions p {
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+.add-room-form-actions > div {
+  display: flex;
+  gap: 10px;
+}
+
+.add-room-cancel-button {
+  color: #cbd5e1;
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+.add-room-submit-button:disabled {
+  color: #94a3b8;
+  background: #334155;
+  border-color: #334155;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 1100px) {
+  .add-room-header {
+    align-items: flex-start;
+  }
+
+  .add-room-header .header-right {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .add-room-main {
+    padding: 20px 16px;
+  }
+
+  .add-room-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .add-room-card {
+    margin-top: 18px;
+    padding: 20px 16px;
+  }
+
+  .add-room-card-heading,
+  .add-room-notice--warning,
+  .add-room-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .add-room-back-button,
+  .add-room-create-type-button {
+    align-self: flex-start;
+  }
+
+  .add-room-fields {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .add-room-field--wide {
+    grid-column: auto;
+  }
+
+  .add-room-form-actions > div {
+    justify-content: flex-end;
+  }
+}
