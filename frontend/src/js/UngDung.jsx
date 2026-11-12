@@ -15,26 +15,46 @@ import EmployeeDashboard from "./TongQuanNhanVien";
 import { getCurrentUser } from "../PhanQuyen";
 import { LogoutProvider } from "./XacNhanDangXuat";
 import AddRoomType from "./ThemLoaiPhong";
+import TenantDetail from "./ChiTietKhachThue";
 function App() {
   return (
     <BrowserRouter>
       <LogoutProvider>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/dashboard" element={Number(getCurrentUser()?.roleId) === 3 ? <Navigate to="/employee" replace /> : <Dashboard />} />
-        <Route path="/rooms" element={<Rooms />} />
-        <Route path="/rooms/add" element={<AddRoom />} />
-        <Route path="/room-types/add" element={<AddRoomType />} />
-        <Route path="/rooms/edit/:id" element={<EditRoom />} />
-        <Route path="/rooms/:id" element={<RoomDetail />} />
-        <Route path="/tenants" element={<Tenants />} />
-        <Route path="/contracts" element={<Contracts />} />
-        <Route path="/payments" element={<Payments />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/employees" element={<Employees />} />
-        <Route path="/employee" element={Number(getCurrentUser()?.roleId) === 3 ? <EmployeeDashboard /> : <Navigate to="/dashboard" replace />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/dashboard"
+            element={
+              Number(getCurrentUser()?.roleId) === 3 ? (
+                <Navigate to="/employee" replace />
+              ) : (
+                <Dashboard />
+              )
+            }
+          />
+          <Route path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/add" element={<AddRoom />} />
+          <Route path="/room-types/add" element={<AddRoomType />} />
+          <Route path="/rooms/edit/:id" element={<EditRoom />} />
+          <Route path="/rooms/:id" element={<RoomDetail />} />
+          <Route path="/tenants" element={<Tenants />} />
+          <Route path="/tenants/:id" element={<TenantDetail />} />
+          <Route path="/contracts" element={<Contracts />} />
+          <Route path="/payments" element={<Payments />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/employees" element={<Employees />} />
+          <Route
+            path="/employee"
+            element={
+              Number(getCurrentUser()?.roleId) === 3 ? (
+                <EmployeeDashboard />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+        </Routes>
       </LogoutProvider>
     </BrowserRouter>
   );

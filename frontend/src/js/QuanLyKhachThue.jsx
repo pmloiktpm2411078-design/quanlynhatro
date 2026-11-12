@@ -1,8 +1,54 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { isOwner } from "../PhanQuyen";
 import "../css/TongQuan.css";
-import "../css/QuanLyPhong.css";
+import "../css/QuanLyKhachThue.css";
+const API_URL = "http://localhost:3000/api/tenants";
+// Chuyển yyyy-MM-dd thành dd/MM/yyyy để hiển thị
+const formatDateVN = (date) => {
+  if (!date) return "";
+
+  const match = String(date).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) return date;
+
+  const [, year, month, day] = match;
+  return `${day}/${month}/${year}`;
+};
+
+// Chuyển dd/MM/yyyy thành yyyy-MM-dd để gửi Backend
+const formatDateISO = (date) => {
+  if (!date) return "";
+
+  const match = String(date).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+  if (!match) return date;
+
+  const [, day, month, year] = match;
+
+  const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+  if (
+    parsedDate.getFullYear() !== Number(year) ||
+    parsedDate.getMonth() !== Number(month) - 1 ||
+    parsedDate.getDate() !== Number(day)
+  ) {
+    return date;
+  }
+
+  return `${year}-${month}-${day}`;
+};
+const emptyTenantForm = {
+  full_name: "",
+  date_of_birth: "",
+  identity_number: "",
+  phone: "",
+  email: "",
+  gender: "",
+  address: "",
+  contact_info: "",
+  user_id: null,
+};
 
 function Tenants() {
   const navigate = useNavigate();
@@ -13,6 +59,12 @@ function Tenants() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tenantToDelete, setTenantToDelete] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [showTenantForm, setShowTenantForm] = useState(false);
+  const [editingTenant, setEditingTenant] = useState(null);
+  const [tenantForm, setTenantForm] = useState({ ...emptyTenantForm });
+  const [savingTenant, setSavingTenant] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     fetchTenants();
@@ -46,7 +98,194 @@ function Tenants() {
       setLoading(false);
     }
   };
+  // Mở form thêm người thuê
+  const openAddTenantForm = () => {
+    setEditingTenant(null);
+    setTenantForm({ ...emptyTenantForm });
+    setFormError("");
+    setSuccessMessage("");
+    setShowTenantForm(true);
+  };
 
+  // Mở form sửa người thuê
+  const openEditTenantForm = (tenant) => {
+    setEditingTenant(tenant);
+
+    setTenantForm({
+      ...emptyTenantForm,
+      full_name: tenant.full_name || "",
+      date_of_birth: formatDateVN(tenant.date_of_birth || ""),
+      identity_number: tenant.identity_number || "",
+      phone: tenant.phone || "",
+      email: tenant.email || "",
+      gender: tenant.gender || "",
+      address: tenant.address || "",
+      contact_info: tenant.contact_info || "",
+      user_id: tenant.user_id || null,
+    });
+    setFormError("");
+    setSuccessMessage("");
+    setShowTenantForm(true);
+  };
+
+  // Cập nhật giá trị khi nhập form
+  const handleTenantFormChange = (event) => {
+    const { name, value } = event.target;
+
+    setTenantForm((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  // Lưu người thuê mới hoặc cập nhật người thuê
+  const handleSaveTenant = async (event) => {
+    event.preventDefault();
+
+    setFormError("");
+    setSuccessMessage("");
+
+    // Lấy dữ liệu đã loại bỏ khoảng trắng thừa
+    const fullName = tenantForm.full_name.trim();
+    const dateOfBirth = tenantForm.date_of_birth.trim();
+    const identityNumber = tenantForm.identity_number.trim();
+    const phone = tenantForm.phone.trim();
+    const email = tenantForm.email.trim();
+    const address = tenantForm.address.trim();
+
+    // 1. Kiểm tra họ tên
+    if (!fullName) {
+      setFormError("Vui lòng nhập họ và tên người thuê.");
+      return;
+    }
+
+    // 2. Kiểm tra ngày sinh dd/MM/yyyy
+    const dateMatch = dateOfBirth.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+    if (!dateMatch) {
+      setFormError(
+        "Ngày sinh không đúng định dạng. Vui lòng nhập theo dạng dd/MM/yyyy. Ví dụ: 15/06/2000.",
+      );
+      return;
+    }
+
+    const day = Number(dateMatch[1]);
+    const month = Number(dateMatch[2]);
+    const year = Number(dateMatch[3]);
+
+    const birthDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (
+      birthDate.getFullYear() !== year ||
+      birthDate.getMonth() !== month - 1 ||
+      birthDate.getDate() !== day
+    ) {
+      setFormError("Ngày sinh không tồn tại. Vui lòng kiểm tra lại.");
+      return;
+    }
+
+    if (birthDate > today) {
+      setFormError("Ngày sinh không được lớn hơn ngày hiện tại.");
+      return;
+    }
+
+    // 3. Kiểm tra CCCD/CMND
+    if (!/^(?:\d{9}|\d{12})$/.test(identityNumber)) {
+      setFormError(
+        "CCCD phải có đúng 12 chữ số hoặc CMND cũ phải có đúng 9 chữ số.",
+      );
+      return;
+    }
+
+    // 4. Kiểm tra số điện thoại
+    if (!/^0\d{9}$/.test(phone)) {
+      setFormError(
+        "Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0. Ví dụ: 0912345678.",
+      );
+      return;
+    }
+
+    // 5. Kiểm tra email nếu có nhập
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFormError("Email không đúng định dạng. Ví dụ: example@gmail.com.");
+      return;
+    }
+
+    // 6. Kiểm tra địa chỉ
+    if (!address) {
+      setFormError("Vui lòng nhập địa chỉ người thuê.");
+      return;
+    }
+
+    if (address.length > 255) {
+      setFormError("Địa chỉ không được vượt quá 255 ký tự.");
+      return;
+    }
+
+    if (fullName.length > 150) {
+      setFormError("Họ và tên không được vượt quá 150 ký tự.");
+      return;
+    }
+
+    setSavingTenant(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const isEditing = Boolean(editingTenant);
+
+      const response = await fetch(
+        isEditing ? `${API_URL}/${editingTenant.tenant_id}` : API_URL,
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            ...tenantForm,
+            full_name: fullName,
+            date_of_birth: formatDateISO(dateOfBirth),
+            identity_number: identityNumber,
+            phone: phone,
+            email: email || null,
+            address: address,
+            gender: tenantForm.gender || null,
+            contact_info: tenantForm.contact_info.trim() || null,
+            user_id: tenantForm.user_id || null,
+          }),
+        },
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const message = [result.message, result.detail, result.error]
+          .filter(Boolean)
+          .join(" - ");
+
+        throw new Error(message || "Không thể lưu thông tin người thuê.");
+      }
+
+      setShowTenantForm(false);
+      setEditingTenant(null);
+      setTenantForm({ ...emptyTenantForm });
+
+      setSuccessMessage(
+        result.message ||
+          (isEditing
+            ? "Cập nhật người thuê thành công."
+            : "Thêm người thuê thành công."),
+      );
+
+      await fetchTenants();
+    } catch (error) {
+      setFormError(error.message || "Không thể kết nối đến máy chủ.");
+    } finally {
+      setSavingTenant(false);
+    }
+  };
   const handleDeleteTenant = async () => {
     if (!tenantToDelete) return;
     setActionError("");
@@ -102,7 +341,7 @@ function Tenants() {
   });
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout tenant-dark-theme">
       {/* SIDEBAR BÊN TRÁI */}
       <aside className="sidebar">
         <div className="sidebar-logo">
@@ -138,14 +377,42 @@ function Tenants() {
       </aside>
 
       {/* NỘI DUNG CHÍNH BÊN PHẢI */}
-      <main className="main-content">
+      <main className="main-content tenant-management-page">
+        {" "}
         <header className="main-header">
           <div>
             <h1>Quản lý người thuê</h1>
             <p>Danh sách và thông tin chi tiết khách thuê trọ</p>
           </div>
         </header>
+        {/* THỐNG KÊ NGƯỜI THUÊ */}
+        <div className="tenant-stats-grid">
+          <div className="tenant-stat-card">
+            <div className="tenant-stat-label">Tổng người thuê</div>
+            <div className="tenant-stat-value">{tenants.length}</div>
+          </div>
 
+          <div className="tenant-stat-card">
+            <div className="tenant-stat-label">Đang có phòng</div>
+            <div className="tenant-stat-value tenant-stat-blue">
+              {tenants.filter((t) => t.room_code || t.room_number).length}
+            </div>
+          </div>
+
+          <div className="tenant-stat-card">
+            <div className="tenant-stat-label">Chưa xếp phòng</div>
+            <div className="tenant-stat-value tenant-stat-green">
+              {tenants.filter((t) => !t.room_code && !t.room_number).length}
+            </div>
+          </div>
+
+          <div className="tenant-stat-card">
+            <div className="tenant-stat-label">Có tài khoản liên kết</div>
+            <div className="tenant-stat-value tenant-stat-orange">
+              {tenants.filter((t) => t.user_id != null).length}
+            </div>
+          </div>
+        </div>
         <div className="room-management-container">
           {/* Thanh tìm kiếm và nút Thêm mới */}
           <div className="room-toolbar">
@@ -159,16 +426,28 @@ function Tenants() {
               />
             </div>
 
-            <button
-              className="btn-add-room"
-              onClick={() => navigate("/tenants/add")}
-            >
+            <button className="btn-add-room" onClick={openAddTenantForm}>
               + Thêm người thuê
             </button>
           </div>
-
+          {successMessage && (
+            <div
+              className="tenant-feedback tenant-feedback-success"
+              role="status"
+            >
+              {successMessage}
+            </div>
+          )}
           {/* Bảng dữ liệu người thuê */}
           <div className="room-table-card">
+            {successMessage && (
+              <div
+                className="tenant-feedback tenant-feedback-success"
+                role="status"
+              >
+                {successMessage}
+              </div>
+            )}
             <div className="table-header-title">Danh sách người thuê</div>
 
             {loading && (
@@ -224,7 +503,13 @@ function Tenants() {
                       filteredTenants.map((item) => (
                         <tr key={item.tenant_id}>
                           <td>
-                            <strong>{item.full_name}</strong>
+                            <Link
+                              to={`/tenants/${item.tenant_id}`}
+                              className="tenant-name-link"
+                              title="Xem thông tin chi tiết khách thuê"
+                            >
+                              {item.full_name}
+                            </Link>
                           </td>
                           <td>{item.phone || "---"}</td>
                           <td>{item.identity_number || "---"}</td>
@@ -252,28 +537,24 @@ function Tenants() {
                           <td>{item.address || "---"}</td>
                           <td className="room-row-actions">
                             <button
+                              type="button"
                               className="btn-action-edit"
                               title="Sửa thông tin"
-                              onClick={() =>
-                                navigate(`/tenants/edit/${item.tenant_id}`)
-                              }
+                              onClick={() => openEditTenantForm(item)}
                             >
-                              <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 20h9" />
-                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
-                              </svg>
+                              Sửa
                             </button>
+
                             <button
+                              type="button"
                               className="btn-action-delete"
                               title="Xóa người thuê"
-                              onClick={() => setTenantToDelete(item)}
+                              onClick={() => {
+                                setTenantToDelete(item);
+                                setActionError("");
+                              }}
                             >
-                              <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M3 6h18" />
-                                <path d="M8 6V4h8v2" />
-                                <path d="m19 6-1 14H6L5 6" />
-                                <path d="M10 11v5M14 11v5" />
-                              </svg>
+                              Xóa
                             </button>
                           </td>
                         </tr>
@@ -292,7 +573,136 @@ function Tenants() {
           </div>
         </div>
       </main>
+      {/* FORM THÊM / SỬA NGƯỜI THUÊ */}
+      {showTenantForm && (
+        <div
+          className="tenant-form-overlay"
+          onClick={() => {
+            if (!savingTenant) setShowTenantForm(false);
+          }}
+        >
+          <div
+            className="tenant-form-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2>
+              {editingTenant ? "Chỉnh sửa người thuê" : "Thêm người thuê"}
+            </h2>
 
+            <form onSubmit={handleSaveTenant} noValidate>
+              <label>
+                Họ và tên *
+                <input
+                  name="full_name"
+                  type="text"
+                  value={tenantForm.full_name}
+                  onChange={handleTenantFormChange}
+                  maxLength={150}
+                />
+              </label>
+
+              <label>
+                Ngày sinh *
+                <input
+                  name="date_of_birth"
+                  type="text"
+                  placeholder="dd/MM/yyyy"
+                  value={tenantForm.date_of_birth}
+                  onChange={handleTenantFormChange}
+                />
+              </label>
+
+              <label>
+                CCCD/CMND *
+                <input
+                  name="identity_number"
+                  type="text"
+                  value={tenantForm.identity_number}
+                  onChange={handleTenantFormChange}
+                  maxLength={12}
+                />
+              </label>
+
+              <label>
+                Số điện thoại *
+                <input
+                  name="phone"
+                  type="text"
+                  value={tenantForm.phone}
+                  onChange={handleTenantFormChange}
+                  maxLength={10}
+                />
+              </label>
+
+              <label>
+                Email
+                <input
+                  name="email"
+                  type="text"
+                  value={tenantForm.email}
+                  onChange={handleTenantFormChange}
+                />
+              </label>
+
+              <label>
+                Giới tính
+                <select
+                  name="gender"
+                  value={tenantForm.gender}
+                  onChange={handleTenantFormChange}
+                >
+                  <option value="">Chưa chọn</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </label>
+
+              <label>
+                Địa chỉ *
+                <input
+                  name="address"
+                  type="text"
+                  value={tenantForm.address}
+                  onChange={handleTenantFormChange}
+                  maxLength={255}
+                />
+              </label>
+
+              <label>
+                Thông tin liên hệ thêm
+                <textarea
+                  name="contact_info"
+                  value={tenantForm.contact_info}
+                  onChange={handleTenantFormChange}
+                  maxLength={255}
+                  rows={3}
+                />
+              </label>
+
+              {formError && <p className="tenant-form-error">{formError}</p>}
+
+              <div className="tenant-form-actions">
+                <button
+                  type="button"
+                  onClick={() => setShowTenantForm(false)}
+                  disabled={savingTenant}
+                >
+                  Hủy
+                </button>
+
+                <button type="submit" disabled={savingTenant}>
+                  {savingTenant
+                    ? "Đang lưu..."
+                    : editingTenant
+                      ? "Lưu thay đổi"
+                      : "Thêm người thuê"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       {/* MODAL XÁC NHẬN XÓA */}
       {tenantToDelete && (
         <div className="custom-modal-overlay">

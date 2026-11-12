@@ -23,6 +23,7 @@ function EditRoom() {
     area_m2: "",
     listed_rent: "",
     description: "",
+    status: "AVAILABLE",
   });
 
   // Lấy thông tin phòng và danh sách loại phòng
@@ -141,11 +142,16 @@ function EditRoom() {
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-icon">🏠</div>
-          <div><h2>NHÀ TRỌ SÁU BÁ</h2></div>
+          <div>
+            <h2>NHÀ TRỌ SÁU BÁ</h2>
+          </div>
         </div>
 
         <ul className="sidebar-menu">
-          <li className="menu-item" onClick={() => navigate(isOwner() ? "/dashboard" : "/employee")}>
+          <li
+            className="menu-item"
+            onClick={() => navigate(isOwner() ? "/dashboard" : "/employee")}
+          >
             <span>🏠</span> Tổng quan
           </li>
           <li className="menu-item active" onClick={() => navigate("/rooms")}>
@@ -154,19 +160,41 @@ function EditRoom() {
           <li className="menu-item" onClick={() => navigate("/tenants")}>
             <span>👥</span> Quản lý người thuê
           </li>
-          <li className="menu-item" onClick={() => navigate("/contracts")}><span>📄</span> Quản lý hợp đồng</li>
-          <li className="menu-item" onClick={() => navigate("/payments")}><span>💰</span> Quản lý thu tiền</li>
-          <li className="menu-item" onClick={() => navigate("/services")}><span>🛠️</span> Dịch vụ</li>
-          {isOwner() && <li className="menu-item" onClick={() => navigate("/employees")}><span>🧑‍💼</span> Quản lý tài khoản</li>}
-          <li className="menu-item"><span>⚙️</span> Cài đặt</li>
+          <li className="menu-item" onClick={() => navigate("/contracts")}>
+            <span>📄</span> Quản lý hợp đồng
+          </li>
+          <li className="menu-item" onClick={() => navigate("/payments")}>
+            <span>💰</span> Quản lý thu tiền
+          </li>
+          <li className="menu-item" onClick={() => navigate("/services")}>
+            <span>🛠️</span> Dịch vụ
+          </li>
+          {isOwner() && (
+            <li className="menu-item" onClick={() => navigate("/employees")}>
+              <span>🧑‍💼</span> Quản lý tài khoản
+            </li>
+          )}
+          <li className="menu-item">
+            <span>⚙️</span> Cài đặt
+          </li>
           <li className="menu-item logout-btn" onClick={requestLogout}>
             <span className="logout-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H19a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-5"></path>
-              <polyline points="7 16 3 12 7 8"></polyline>
-              <line x1="3" y1="12" x2="15" y2="12"></line>
-            </svg>
-          </span> Đăng xuất
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M14 2H19a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-5"></path>
+                <polyline points="7 16 3 12 7 8"></polyline>
+                <line x1="3" y1="12" x2="15" y2="12"></line>
+              </svg>
+            </span>{" "}
+            Đăng xuất
           </li>
         </ul>
 
@@ -182,8 +210,12 @@ function EditRoom() {
             <p>Chỉnh sửa thông tin phòng và lưu thay đổi.</p>
           </div>
           <div className="header-right">
-            <div className="date-filter"><span>📅 Tháng 10, 2026</span></div>
-            <div className="user-profile"><span>👤 Quản trị viên</span></div>
+            <div className="date-filter">
+              <span>📅 Tháng 10, 2026</span>
+            </div>
+            <div className="user-profile">
+              <span>👤 Quản trị viên</span>
+            </div>
           </div>
         </header>
 
@@ -204,18 +236,31 @@ function EditRoom() {
           </div>
 
           {loading && (
-            <div className="add-room-notice add-room-notice--loading" role="status">
+            <div
+              className="add-room-notice add-room-notice--loading"
+              role="status"
+            >
               Đang tải thông tin phòng...
             </div>
           )}
-          {error && <div className="add-room-error" role="alert">{error}</div>}
-          {success && <div className="add-room-success" role="status">{success}</div>}
+          {error && (
+            <div className="add-room-error" role="alert">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="add-room-success" role="status">
+              {success}
+            </div>
+          )}
 
           {!loading && !error && (
             <form className="add-room-form" onSubmit={handleSubmit}>
               <div className="add-room-fields">
                 <label className="add-room-field">
-                  <span>Mã phòng <b>*</b></span>
+                  <span>
+                    Mã phòng <b>*</b>
+                  </span>
                   <input
                     name="room_code"
                     value={form.room_code}
@@ -226,7 +271,9 @@ function EditRoom() {
                 </label>
 
                 <label className="add-room-field">
-                  <span>Số phòng <b>*</b></span>
+                  <span>
+                    Số phòng <b>*</b>
+                  </span>
                   <input
                     name="room_number"
                     value={form.room_number}
@@ -237,7 +284,9 @@ function EditRoom() {
                 </label>
 
                 <label className="add-room-field">
-                  <span>Loại phòng <b>*</b></span>
+                  <span>
+                    Loại phòng <b>*</b>
+                  </span>
                   <select
                     name="room_type_id"
                     value={form.room_type_id}
@@ -248,14 +297,17 @@ function EditRoom() {
                     <option value="">-- Chọn loại phòng --</option>
                     {roomTypes.map((type) => (
                       <option key={type.room_type_id} value={type.room_type_id}>
-                        {type.type_code ? `${type.type_code} - ` : ""}{type.type_name}
+                        {type.type_code ? `${type.type_code} - ` : ""}
+                        {type.type_name}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <label className="add-room-field">
-                  <span>Diện tích <small>(m²)</small></span>
+                  <span>
+                    Diện tích <small>(m²)</small>
+                  </span>
                   <input
                     type="number"
                     name="area_m2"
@@ -267,7 +319,9 @@ function EditRoom() {
                 </label>
 
                 <label className="add-room-field">
-                  <span>Giá thuê mỗi tháng <small>(VNĐ)</small> <b>*</b></span>
+                  <span>
+                    Giá thuê mỗi tháng <small>(VNĐ)</small> <b>*</b>
+                  </span>
                   <input
                     type="number"
                     name="listed_rent"
@@ -280,7 +334,9 @@ function EditRoom() {
                 </label>
 
                 <label className="add-room-field add-room-field--wide">
-                  <span>Mô tả phòng <small>(không bắt buộc)</small></span>
+                  <span>
+                    Mô tả phòng <small>(không bắt buộc)</small>
+                  </span>
                   <textarea
                     name="description"
                     value={form.description}
@@ -292,7 +348,9 @@ function EditRoom() {
               </div>
 
               <div className="add-room-form-actions">
-                <p><b>*</b> Thông tin bắt buộc</p>
+                <p>
+                  <b>*</b> Thông tin bắt buộc
+                </p>
                 <div>
                   <button
                     className="add-room-cancel-button"
@@ -314,7 +372,6 @@ function EditRoom() {
           )}
         </section>
       </main>
-
     </div>
   );
 }

@@ -42,3 +42,11 @@ node_modules/
 # Keep versioned database migrations
 !migrations/
 !migrations/*.sql
+
+# Local backup and temporary files
+backup-code-cu/
+*.zip
+*.bak2
+* copy.js
+
+/routes/kiemTraDB.js
