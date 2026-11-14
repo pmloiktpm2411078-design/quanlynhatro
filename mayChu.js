@@ -12,6 +12,7 @@ const servicesRouter = require("./routes/dichVu");
 const usersRouter = require("./routes/taiKhoan");
 const giuPhongRoute = require("./routes/giuPhong");
 const app = express();
+const batDauXuLyGiuPhongHetHan = require("./jobs/xuLyGiuPhongHetHan");
 app.use(cors());
 app.use(express.json());
 app.use("/api/rooms", roomsRouter);
@@ -71,6 +72,7 @@ app.post("/api/login", async (req, res) => {
       message: "Đăng nhập thành công!",
       token: token,
       user: {
+        userId: user.user_id,
         fullName: user.full_name,
         roleId: user.role_id,
       },
@@ -111,4 +113,7 @@ app.get("/api/room-types", async (req, res) => {
 
 app.listen(3000, () => {
   console.log("Server đang chạy tại: http://localhost:3000");
+
+  // Khởi động bộ xử lý phiếu giữ phòng hết hạn
+  batDauXuLyGiuPhongHetHan();
 });

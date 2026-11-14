@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "../css/GiuPhong.css"; // Nhúng file CSS riêng
+import { getCurrentUser } from "../PhanQuyen";
 
 export default function GiuPhong({ phong, room, onClose, onSuccess }) {
+  const currentUser = getCurrentUser();
+  const token = localStorage.getItem("token");
   // Hỗ trợ nhận prop là `phong` hoặc `room`
   const targetRoom = phong || room;
 
@@ -10,19 +13,23 @@ export default function GiuPhong({ phong, room, onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!currentUser?.userId || !token) {
+      alert("Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.");
+      return;
+    }
     try {
       const response = await fetch(
-        "http://localhost:5000/api/giu-phong/dat-coc",
+        "http://localhost:3000/api/giu-phong/dat-coc",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             room_id: targetRoom?.room_id || targetRoom?.id,
             tenant_id: tenantId,
             deposit_amount: depositAmount,
-            created_by: 1, // ID nhân viên thao tác
           }),
         },
       );

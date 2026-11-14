@@ -3,7 +3,9 @@ const db = require("../config/db");
 const authMiddleware = require("./xacThuc");
 
 const router = express.Router();
+const OWNER_ROLE_ID = 1;
 const methods = new Set(["CASH", "BANK_TRANSFER", "OTHER"]);
+
 const dateIsValid = (value) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return false;
   const [year, month, day] = value.split("-").map(Number);
@@ -173,11 +175,27 @@ router.get("/", async (req, res) => {
 });
 
 async function savePayment(req, res, updating) {
+  // Chỉ Chủ trọ được chỉnh sửa khoản thu
+  if (updating && Number(req.user?.roleId) !== 1) {
+    return res.status(403).json({
+      message: "Chỉ Chủ trọ mới được chỉnh sửa khoản thu.",
+    });
+  }
   const paymentId = updating ? Number(req.params.id) : null;
   if (updating && (!Number.isInteger(paymentId) || paymentId <= 0))
     return res.status(400).json({ message: "Mã khoản thu không hợp lệ." });
   const { values, error } = parseAmounts(req.body);
   if (error) return res.status(400).json({ message: error });
+
+  // Khi tạo khoản thu mới, chưa ghi nhận tiền khách đã thanh toán.
+  if (!updating) {
+    values.rent_paid_amount = 0;
+    values.electricity_paid_amount = 0;
+    values.water_paid_amount = 0;
+    values.other_paid_amount = 0;
+    values.payment_method = null;
+  }
+
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
@@ -225,12 +243,32 @@ async function savePayment(req, res, updating) {
       values.other_paid_amount;
     if (updating) {
       const [existing] = await connection.query(
-        "SELECT payment_id, contract_id, billing_month FROM payment_records WHERE payment_id = ? FOR UPDATE",
+        `SELECT payment_id, contract_id, billing_month,
+          rent_paid_amount, electricity_paid_amount,
+          water_paid_amount, other_paid_amount
+   FROM payment_records
+   WHERE payment_id = ?
+   FOR UPDATE`,
         [paymentId],
       );
       if (!existing.length) {
         await connection.rollback();
-        return res.status(404).json({ message: "Không tìm thấy khoản thu." });
+        return res.status(404).json({
+          message: "Không tìm thấy khoản thu.",
+        });
+      }
+      const existingPaidAmount =
+        Number(existing[0].rent_paid_amount || 0) +
+        Number(existing[0].electricity_paid_amount || 0) +
+        Number(existing[0].water_paid_amount || 0) +
+        Number(existing[0].other_paid_amount || 0);
+
+      if (existingPaidAmount > 0) {
+        await connection.rollback();
+        return res.status(409).json({
+          message:
+            "Khoản thu đã phát sinh thanh toán, không thể chỉnh sửa trực tiếp.",
+        });
       }
       if (
         Number(existing[0].contract_id) !== values.contract_id ||
@@ -340,10 +378,11 @@ router.patch("/:id/status", async (req, res) => {
     .toUpperCase();
   if (!Number.isInteger(paymentId) || paymentId <= 0)
     return res.status(400).json({ message: "Mã khoản thu không hợp lệ." });
-  if (!new Set(["PAID", "UNPAID", "PARTIAL"]).has(status))
-    return res
-      .status(400)
-      .json({ message: "Trạng thái khoản thu không hợp lệ." });
+  if (!new Set(["PAID", "PARTIAL"]).has(status))
+    return res.status(400).json({
+      message:
+        "Chỉ được ghi nhận Đã thu đủ hoặc Thu một phần. Không được chuyển khoản đã thu về Chưa thu.",
+    });
   if (status === "PARTIAL") {
     const paidAmount = Number(req.body.paid_amount);
     if (!Number.isFinite(paidAmount) || paidAmount <= 0)
@@ -456,21 +495,10 @@ router.patch("/:id/status", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  const paymentId = Number(req.params.id);
-  if (!Number.isInteger(paymentId) || paymentId <= 0)
-    return res.status(400).json({ message: "Mã khoản thu không hợp lệ." });
-  try {
-    const [result] = await db.query(
-      "DELETE FROM payment_records WHERE payment_id = ?",
-      [paymentId],
-    );
-    if (!result.affectedRows)
-      return res.status(404).json({ message: "Không tìm thấy khoản thu." });
-    return res.json({ message: "Xóa khoản thu thành công." });
-  } catch (error) {
-    console.error("Lỗi xóa khoản thu:", error.code || error.message);
-    return res.status(500).json({ message: "Không thể xóa khoản thu." });
-  }
+  return res.status(403).json({
+    message:
+      "Không được xóa trực tiếp khoản thu để bảo toàn lịch sử tài chính.",
+  });
 });
 
 module.exports = router;
